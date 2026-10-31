@@ -1,0 +1,248 @@
+/* ── NOSOTROS ── */
+
+.nosotros {
+  background: #fff;
+  color: #1d1d1f;
+}
+
+/* HERO */
+.nos-hero {
+  position: relative;
+  overflow: hidden;
+  padding: 90px 80px 80px;
+  background:
+    var(--bg-primary)
+}
+
+.nos-hero-inner {
+  position: relative;
+  z-index: 1;
+  max-width: 620px;
+  animation: fadeUp 0.6s ease both;
+}
+
+.nos-titulo {
+  font-size: clamp(44px, 5.5vw, 72px);
+  font-weight: 700;
+  line-height: 1.02;
+  letter-spacing: -0.03em;
+  color: var(--text-primary);
+  margin-bottom: 20px;
+  animation: fadeUp 0.6s 0.1s ease both;
+}
+
+.nos-titulo em {
+  font-style: italic;
+  color: #0071e3;
+}
+
+.nos-sub {
+  font-size: 17px;
+  color: var(--text-secondary);
+  line-height: 1.65;
+  max-width: 480px;
+  font-weight: 300;
+  animation: fadeUp 0.6s 0.2s ease both;
+}
+
+/* decoración de fondo */
+.nos-hero-deco {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.deco-ring {
+  position: absolute;
+  border-radius: 50%;
+  border: 1px solid rgba(0, 113, 227, 0.1);
+}
+
+.deco-ring-1 {
+  width: 500px;
+  height: 500px;
+  top: -160px;
+  right: -120px;
+}
+
+.deco-ring-2 {
+  width: 340px;
+  height: 340px;
+  top: -60px;
+  right: 60px;
+}
+
+.deco-ring-3 {
+  width: 180px;
+  height: 180px;
+  top: 40px;
+  right: 200px;
+}
+
+/* MISIÓN Y VISIÓN */
+.nos-mv {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  padding: 60px 80px;
+  background: var(--bg-secondary);
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+}
+
+.nos-mv-card {
+  background: var(--bg-primary);
+  border-radius: 20px;
+  padding: 40px 36px;
+  border: 0.7px solid var(--border);
+  transition: transform 0.25s, box-shadow 0.25s;
+}
+
+.nos-mv-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.07);
+}
+
+.nos-mv-label {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #0071e3;
+  background: rgba(0, 113, 227, 0.08);
+  padding: 4px 12px;
+  border-radius: 980px;
+  margin-bottom: 18px;
+}
+
+.nos-mv-card h2 {
+  font-size: clamp(20px, 2.2vw, 28px);
+  font-weight: 700;
+  color: var(--text-primary);
+  letter-spacing: -0.02em;
+  line-height: 1.15;
+  margin-bottom: 14px;
+}
+
+.nos-mv-card p {
+  font-size: 15px;
+  color: var(--text-secondary);
+  line-height: 1.7;
+  font-weight: 300;
+}
+
+/* NÚMEROS */
+.nos-numeros {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  background: var(--bg-primary);
+  padding: 60px 80px;
+  gap: 0;
+}
+
+.nos-numero {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 20px 10px;
+  border-right: 0.7px solid var(--border);
+}
+
+.nos-numero:last-child {
+  border-right: none;
+}
+
+.nos-num {
+  font-size: clamp(32px, 3.5vw, 48px);
+  font-weight: 700;
+  color: #0071e3;
+  letter-spacing: -0.03em;
+  line-height: 1;
+}
+
+.nos-num-label {
+  font-size: 13px;
+  color: var(--text-secondary);
+  text-align: center;
+  font-weight: 400;
+}
+
+/* POR QUÉ ELEGIRNOS */
+.nos-porque {
+  padding: 70px 80px 80px;
+  background: var(--bg-primary);
+}
+
+.nos-porque-titulo {
+  font-size: clamp(28px, 3.5vw, 40px);
+  font-weight: 700;
+  color: var(--text-primary);
+  letter-spacing: -0.02em;
+  text-align: center;
+  
+  margin-bottom: 48px;
+}
+
+.nos-porque-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.nos-porque-item {
+  background: var(--bg-secondary);
+  border-radius: 20px;
+  padding: 32px 28px;
+  border: 0.7px solid var(--border);
+  transition: transform 0.25s, box-shadow 0.25s;
+}
+
+.nos-porque-item:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.08);
+}
+
+.nos-porque-icon {
+  font-size: 28px;
+  color: #0071e3;
+  margin-bottom: 16px;
+  display: block;
+}
+
+.nos-porque-item h3 {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 10px;
+  letter-spacing: -0.01em;
+}
+
+.nos-porque-item p {
+  font-size: 14px;
+  color: var(--text-secondary);
+  line-height: 1.65;
+  font-weight: 300;
+}
+
+/* RESPONSIVE */
+@media (max-width: 900px) {
+  .nos-hero { padding: 60px 40px; }
+  .nos-mv { grid-template-columns: 1fr; padding: 40px 24px; }
+  .nos-numeros { grid-template-columns: repeat(2, 1fr); padding: 40px 24px; }
+  .nos-numero { border-right: none; border-bottom: 0.7px solid #e5e5e7; padding: 24px 10px; }
+  .nos-numero:last-child { border-bottom: none; }
+  .nos-porque { padding: 50px 24px 60px; }
+  .nos-porque-grid { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (max-width: 600px) {
+  .nos-hero { padding: 50px 1.5rem; text-align: center; }
+  .nos-sub { margin: 0 auto; }
+  .nos-numeros { grid-template-columns: 1fr 1fr; }
+  .nos-porque-grid { grid-template-columns: 1fr; }
+  .deco-ring-1, .deco-ring-2, .deco-ring-3 { display: none; }
+}

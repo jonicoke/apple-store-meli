@@ -1,0 +1,68 @@
+/* ── DARK MODE: elementos hardcodeados ── */
+.tema-oscuro .carrusel-card {
+  background: var(--bg-secondary);
+}
+
+.tema-oscuro .menu-desplegable {
+  background: var(--bg-secondary);
+  border-color: var(--border);
+}
+
+.tema-oscuro .menu-desplegable-sidebar {
+  background: var(--bg-tertiary);
+  border-right-color: var(--border);
+}
+
+.tema-oscuro .menu-sidebar-item {
+  color: var(--text-primary);
+}
+.tema-oscuro .menu-sidebar-item:hover,
+.tema-oscuro .menu-sidebar-item.activo {
+  background: var(--bg-primary);
+}
+
+.tema-oscuro .menu-desplegable-sidebar h3 {
+  color: var(--text-primary);
+}
+
+.tema-oscuro .menu-desplegable-card {
+  background: var(--bg-primary);
+}
+.tema-oscuro .menu-desplegable-card:hover {
+  background: var(--bg-tertiary);
+}
+
+.tema-oscuro .menu-card-nombre {
+  color: var(--text-primary);
+}
+
+.tema-oscuro .menu-card-precio {
+  color: var(--text-secondary);
+}
+
+.tema-oscuro .beneficios {
+  background: var(--bg-secondary);
+  border-color: var(--border);
+}
+
+.tema-oscuro .beneficio h4 {
+  color: var(--text-primary);
+}
+
+.tema-oscuro .dot {
+  background: var(--bg-tertiary);
+}
+.tema-oscuro .dot-activo {
+  background: var(--text-primary);
+}
+
+.tema-oscuro .fila-poco-stock .fila-titulo {
+  color: var(--text-primary);
+}
+.tema-oscuro .fila-poco-stock .fila-subtitulo {
+  color: var(--text-secondary);
+}
+
+.tema-oscuro .fila-mas-vendido {
+  background: rgba(230, 92, 0, 0.2);
+}
