@@ -1,6 +1,9 @@
-
 import { useEffect, useState } from 'react';
-import { getProductsByCategory, getCategory } from '../service/productService';
+import {
+    getProductsByCategory,
+    getCategory,
+    searchProducts
+} from '../service/productService';
 
 const categoriasBusqueda = {
     iphone: 'iPhone 17',
@@ -10,49 +13,83 @@ const categoriasBusqueda = {
     ofertas: 'iPhone 16',
 };
 
-export default function useProductos(cat) {
+export default function useProductos(cat, busqueda) {
     const [products, setProducts] = useState([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
 
     useEffect(() => {
         const cargarProductos = async () => {
-            const query = categoriasBusqueda[cat];
-
-            if (!query) {
-                setProducts([]);
-                setError(null);
-                return;
-            }
-
             try {
                 setLoading(true);
                 setError(null);
 
+                // Si viene una búsqueda desde el navbar
+                if (busqueda) {
+                    const result = await searchProducts(busqueda);
+
+                    if (!Array.isArray(result)) {
+                        throw new Error(
+                            "La respuesta de búsqueda no tiene el formato esperado"
+                        );
+                    }
+
+                    setProducts(result);
+                    return;
+                }
+
+                // Si no hay búsqueda, cargamos por categoría
+                const query = categoriasBusqueda[cat];
+
+                if (!query) {
+                    setProducts([]);
+                    return;
+                }
+
                 const category = await getCategory(query);
 
                 if (!category || category.length === 0) {
-                    throw new Error('No se encontró una categoría para la búsqueda');
+                    throw new Error(
+                        'No se encontró una categoría para la búsqueda'
+                    );
                 }
 
                 const domainId = category[0].domain_id;
-                const result = await getProductsByCategory(query, domainId);
+
+                const result = await getProductsByCategory(
+                    query,
+                    domainId
+                );
+
                 if (!Array.isArray(result)) {
-                    throw new Error('La respuesta de productos no tiene el formato esperado');
+                    throw new Error(
+                        'La respuesta de productos no tiene el formato esperado'
+                    );
                 }
 
                 setProducts(result);
+
             } catch (err) {
                 console.error('Error al cargar productos:', err);
+
                 setProducts([]);
-                setError(err.message || 'No se pudieron cargar los productos');
+                setError(
+                    err.message ||
+                    'No se pudieron cargar los productos'
+                );
+
             } finally {
                 setLoading(false);
             }
         };
 
         cargarProductos();
-    }, [cat]);
 
-    return { products, loading, error };
+    }, [cat, busqueda]);
+
+    return {
+        products,
+        loading,
+        error
+    };
 }

@@ -22,12 +22,13 @@ public class MeLiClient {
         this.restClient = RestClient.builder().baseUrl("https://api.mercadolibre.com").build();
     }
     public String searchProducts(String q) {
+        String query = q.toLowerCase().contains("apple") ? q : "Apple " + q;
         return restClient.get()
                 .uri(uriBuilder -> uriBuilder.path("/products/search")
                         .queryParam("status", "active")
                         .queryParam("site_id", "MLA")
                         .queryParam("limit", 20)
-                        .queryParam("q", q)
+                        .queryParam("q", query)
                         .build())
                 .header("Authorization", "Bearer " + tokenService.getAccessToken())
                 .retrieve().body(String.class);

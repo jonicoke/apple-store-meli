@@ -29,10 +29,12 @@ const PRECIO_LIMITE = 5000000;
 function Productos() {
     const [searchParams] = useSearchParams();
     const cat = searchParams.get('cat');
+    const busqueda = searchParams.get('busqueda');
+
 
     const filtrosActivos = mapaFiltros[cat] || [];
 
-    const { products, loading, error } = useProducts(cat);
+    const { products, loading, error } = useProducts(cat, busqueda);
     const conteos = {};
 
     const [seleccionados, setSeleccionados] = useState({});
@@ -58,7 +60,7 @@ function Productos() {
         setPrecioMin(0);
         setPrecioMax(PRECIO_LIMITE);
         setPanelAbierto(null);
-    }, [cat]);
+    }, [cat, busqueda]);
 
     filtrosActivos.forEach((filtro) => {
         filtro.opciones.forEach((opcion) => {
@@ -138,13 +140,15 @@ function Productos() {
                 {error && <p>{error}</p>}
 
                 {!loading && !error && (
-                    <Cards productos={products} 
-                            datos={filtrosActivos}
-                            seleccionados={seleccionados}
-                            precioMin={precioMin}
-                            precioMax={precioMax}
-                            orden={orden}
-                            />
+                    <Cards
+                        productos={products}
+                        datos={filtrosActivos}
+                        seleccionados={seleccionados}
+                        precioMin={precioMin}
+                        precioMax={precioMax}
+                        orden={orden}
+                        cat={cat}
+                    />
                 )}
             </div>
         </div>

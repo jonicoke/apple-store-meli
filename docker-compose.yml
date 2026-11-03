@@ -6,7 +6,7 @@ services:
       dockerfile: Dockerfile
 
     ports:
-      - "8000:8080"
+      - "8080:8080"
 
     environment:
       MELI_CLIENT_ID: ${MELI_CLIENT_ID}

@@ -6,8 +6,6 @@ import {
 import { Link } from "react-router-dom";
 import "../styles/pages/contacto.css";
 import { useCart } from "../context/CartContext";
-import { productos } from "../data/productos";
-
 const Contacto = () => {
   
   const { carrito, confirmarCompra } = useCart();

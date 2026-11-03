@@ -3,13 +3,11 @@ import { Link, useNavigate } from "react-router-dom";
 import { useCart } from "../context/CartContext";
 import { BsTrash, BsArrowRight, BsBag, BsShieldCheck, BsTruck } from "react-icons/bs";
 import "../styles/pages/carrito.css";
-import { productos } from "../data/productos";
 
 
 function Carrito() {
   const {
     carrito,
-    stocks,
     aumentarCantidad,
     disminuirCantidad,
     eliminarProducto,
@@ -78,24 +76,25 @@ function Carrito() {
                     <button onClick={() => disminuirCantidad(producto.id)} aria-label="Disminuir">−</button>
                     <span>{producto.cantidad}</span>
                     <button
-                      onClick={() => aumentarCantidad(producto.id)}
-                      aria-label="Aumentar"
-                      disabled={stocks[producto.id] <= 0}
-                    >+</button>
+                    onClick={() => aumentarCantidad(producto.id)}
+                    aria-label="Aumentar"
+                  >
+                    +
+                  </button>
                   </div>
 
                   <div className="carrito-item-precios">
                     {producto.tag === "Oferta" && (
                       <span className="carrito-item-precio-original">
-                        USD ${(Math.round(producto.precio * 1.2) * producto.cantidad).toLocaleString("es-AR")}
+                        ARS ${(Math.round(producto.precio * 1.2) * producto.cantidad).toLocaleString("es-AR")}
                       </span>
                     )}
                     <span className="carrito-item-subtotal">
-                      USD ${(producto.precio * producto.cantidad).toLocaleString("es-AR")}
+                      ARS ${(producto.precio * producto.cantidad).toLocaleString("es-AR")}
                     </span>
                     {producto.cantidad > 1 && (
                       <span className="carrito-item-unitario">
-                        USD ${producto.precio.toLocaleString("es-AR")} c/u
+                        ARS ${producto.precio.toLocaleString("es-AR")} c/u
                       </span>
                     )}
                   </div>
@@ -125,32 +124,32 @@ function Carrito() {
             <div className="resumen-lineas">
               <div className="resumen-linea">
                 <span>Subtotal ({cantidadTotal} {cantidadTotal === 1 ? "artículo" : "artículos"})</span>
-                <span>USD ${total.toLocaleString("es-AR")}</span>
+                <span>ARS ${total.toLocaleString("es-AR")}</span>
               </div>
               <div className="resumen-linea">
                 <span>Envío</span>
                 <span className={envio === 0 ? "resumen-gratis" : ""}>
-                  {envio === 0 ? "Gratis" : `USD $${envio.toFixed(2)}`}
+                  {envio === 0 ? "Gratis" : `ARS $${envio.toFixed(2)}`}
                 </span>
               </div>
               <div className="resumen-linea">
                 <span>Seguro (2%)</span>
-                <span>USD ${seguro.toLocaleString("es-AR", { minimumFractionDigits: 2 })}</span>
+                <span>ARS ${seguro.toLocaleString("es-AR", { minimumFractionDigits: 2 })}</span>
               </div>
               <div className="resumen-linea">
                 <span>Gestión de importación (8%)</span>
-                <span>USD ${importacion.toLocaleString("es-AR", { minimumFractionDigits: 2 })}</span>
+                <span>ARS ${importacion.toLocaleString("es-AR", { minimumFractionDigits: 2 })}</span>
               </div>
             </div>
 
             <div className="resumen-total">
               <span>Total</span>
-              <span>USD ${totalFinal.toLocaleString("es-AR", { minimumFractionDigits: 2 })}</span>
+              <span>ARS ${totalFinal.toLocaleString("es-AR", { minimumFractionDigits: 2 })}</span>
             </div>
 
             {envio === 0 && (
               <p className="resumen-envio-gratis">
-                <BsTruck /> Envío gratis por superar USD 2.000
+                <BsTruck /> Envío gratis por superar ARS 2.000
               </p>
             )}
 
@@ -175,18 +174,18 @@ function Carrito() {
 
             <h3>¿Listo para finalizar?</h3>
             <p>
-              Tu pedido por <strong>USD ${totalFinal.toLocaleString("es-AR", { minimumFractionDigits: 2 })}</strong> está
+              Tu pedido por <strong>ARS ${totalFinal.toLocaleString("es-AR", { minimumFractionDigits: 2 })}</strong> está
               listo. En el siguiente paso completás los datos de envío y contacto.
             </p>
 
             <div className="modal-lineas">
               <div className="modal-linea">
                 <span>{cantidadTotal} {cantidadTotal === 1 ? "artículo" : "artículos"}</span>
-                <span>USD ${total.toLocaleString("es-AR")}</span>
+                <span>ARS ${total.toLocaleString("es-AR")}</span>
               </div>
               <div className="modal-linea modal-linea--total">
                 <span>Total con cargos</span>
-                <span>USD ${totalFinal.toLocaleString("es-AR", { minimumFractionDigits: 2 })}</span>
+                <span>ARS ${totalFinal.toLocaleString("es-AR", { minimumFractionDigits: 2 })}</span>
               </div>
             </div>
 

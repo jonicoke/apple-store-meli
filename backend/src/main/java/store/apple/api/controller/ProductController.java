@@ -25,12 +25,14 @@ public class ProductController {
         this.productService = productService;
     }
 
-    @GetMapping("/search")
-    public ResponseEntity<String> searchProducts(@RequestParam String query) {
-        String response = productService.searchProducts(query);
-
-        return ResponseEntity.ok(response);
-    }
+@GetMapping("/search")
+public ResponseEntity<List<ProductDTO>> searchProducts(
+        @RequestParam String query
+) {
+    return ResponseEntity.ok(
+            productService.searchProducts(query)
+    );
+}
     @GetMapping("/category")
     public ResponseEntity<String> searchCategory(@RequestParam String query) {
         String response = productService.searchCategory(query);
