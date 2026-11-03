@@ -1,4 +1,4 @@
-# Apple Store API
+# Apple Store MeLi
 
 Aplicación full stack e-commerce orientada a productos Apple, desarrollada con React y Spring Boot e integrada con la API de Mercado Libre para obtener información dinámica de productos, precios, imágenes y especificaciones.
 
