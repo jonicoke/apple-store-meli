@@ -1,5 +1,5 @@
 
-const URL_BASE = "http://localhost:8080/api/products";
+const URL_BASE = "/api/products";
 
 export async function searchProducts(query) {
     try {

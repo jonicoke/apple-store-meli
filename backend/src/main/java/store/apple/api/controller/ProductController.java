@@ -1,6 +1,5 @@
 package store.apple.api.controller;
 
-import org.apache.coyote.Response;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import store.apple.api.dto.ProductDTO;
@@ -17,7 +16,6 @@ import java.util.List;
  *  3. GetMapping(/search) que llame al searchProducts del service y devolver su response ResponseEntity.ok(response)
  *
  * **/
-@CrossOrigin(origins = "http://localhost:5173")
 @RestController
 @RequestMapping("/api/products")
 public class ProductController {

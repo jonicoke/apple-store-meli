@@ -1,0 +1,19 @@
+services:
+
+  apple-store:
+    build:
+      context: .
+      dockerfile: Dockerfile
+
+    ports:
+      - "8000:8080"
+
+    environment:
+      MELI_CLIENT_ID: ${MELI_CLIENT_ID}
+      MELI_CLIENT_SECRET: ${MELI_CLIENT_SECRET}
+      MELI_ACCESS_TOKEN: ${MELI_ACCESS_TOKEN}
+      MELI_REFRESH_TOKEN: ${MELI_REFRESH_TOKEN}
+      MELI_EXPIRES_AT: ${MELI_EXPIRES_AT}
+
+    volumes:
+      - ./backend/data:/app/data

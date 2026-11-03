@@ -4,7 +4,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClient;
 import store.apple.api.service.MeLiTokenService;
 
-import java.util.List;
 
 /****
  *  MeLiClient ¿Qué es y qué necesita?
