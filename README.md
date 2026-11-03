@@ -1,8 +1,14 @@
 # Apple Store MeLi
 
-Aplicación full stack e-commerce orientada a productos Apple, desarrollada con React y Spring Boot e integrada con la API de Mercado Libre para obtener información dinámica de productos, precios, imágenes y especificaciones.
+Aplicación full stack de e-commerce orientada a productos Apple, desarrollada con React y Spring Boot e integrada con la API de Mercado Libre para obtener información dinámica de productos, precios, imágenes y especificaciones.
 
-El proyecto parte de una aplicación académica realizada para la materia Construcción de Interfaces de Usuario de la Universidad Nacional de Hurlingham (UNAHUR), y fue extendido posteriormente con una arquitectura backend propia e integración con servicios externos.
+El proyecto parte de una aplicación académica realizada para la materia Construcción de Interfaces de Usuario de la Universidad Nacional de Hurlingham (UNAHUR), y fue extendido posteriormente con una arquitectura backend propia, autenticación OAuth, persistencia externa y despliegue en producción.
+
+## Demo
+
+Aplicación desplegada en producción:
+
+https://apple-store-meli.vercel.app/
 
 ## Características
 
@@ -19,10 +25,11 @@ El proyecto parte de una aplicación académica realizada para la materia Constr
 - Tema claro y oscuro.
 - Integración OAuth con Mercado Libre.
 - Renovación automática del access token mediante refresh token.
-- Persistencia local del estado de autenticación.
+- Persistencia del estado OAuth en Supabase.
 - Caché de consultas para reducir peticiones repetidas.
 - Obtención concurrente de precios para mejorar los tiempos de respuesta.
 - Frontend y backend empaquetados en una única imagen Docker.
+- Aplicación desplegada en Vercel como contenedor.
 
 ## Arquitectura
 
@@ -36,14 +43,23 @@ Spring Boot
 Mercado Libre API
 ```
 
-En producción, el frontend compilado es servido directamente por Spring Boot, permitiendo desplegar toda la aplicación como un único servicio.
+El frontend compilado es servido directamente por Spring Boot, permitiendo desplegar toda la aplicación como un único servicio.
+
+En producción, la arquitectura queda compuesta por:
 
 ```text
-Docker
-└── Spring Boot
-    ├── React
-    ├── API REST
-    └── integración con Mercado Libre
+Vercel
+└── Docker Container
+    └── Spring Boot
+        ├── React
+        ├── API REST
+        └── integración con Mercado Libre
+
+Supabase
+└── Persistencia de tokens OAuth
+
+Mercado Libre API
+└── Productos, precios y especificaciones
 ```
 
 ## Tecnologías
@@ -74,11 +90,14 @@ Docker
 - OAuth 2.0
 - Access Token
 - Refresh Token
+- Supabase REST API
 
 ### Infraestructura
 
 - Docker
 - Docker Compose
+- Vercel
+- Supabase
 
 ## Integración con Mercado Libre
 
@@ -158,15 +177,27 @@ expires_at
 
 Cuando el access token está próximo a vencer, el backend utiliza el refresh token para solicitar nuevas credenciales.
 
-El nuevo estado de autenticación se almacena en:
+El estado actualizado de autenticación se persiste en Supabase, lo que permite conservar los tokens independientemente del ciclo de vida del contenedor desplegado.
+
+El flujo general es:
 
 ```text
-data/meli_token.json
+Spring Boot
+   ↓
+Supabase
+   ↓
+carga último estado OAuth
+
+Token vencido
+   ↓
+Mercado Libre OAuth
+   ↓
+nuevo access_token + refresh_token
+   ↓
+Supabase
 ```
 
-Este archivo no debe versionarse.
-
-Por seguridad se encuentra excluido mediante `.gitignore`.
+De esta manera, la aplicación no depende de archivos locales ni de almacenamiento persistente dentro del contenedor.
 
 ## Variables de entorno
 
@@ -175,12 +206,24 @@ La aplicación utiliza las siguientes variables:
 ```env
 MELI_CLIENT_ID=
 MELI_CLIENT_SECRET=
+
+SUPABASE_URL=
+SUPABASE_SECRET_KEY=
+```
+
+Las credenciales OAuth actualizadas se recuperan desde Supabase.
+
+En una primera inicialización también pueden utilizarse:
+
+```env
 MELI_ACCESS_TOKEN=
 MELI_REFRESH_TOKEN=
 MELI_EXPIRES_AT=
 ```
 
-Estas credenciales nunca deben incluirse directamente en el código ni subirse al repositorio.
+Estas variables solo son necesarias si todavía no existe un estado OAuth almacenado en Supabase.
+
+Las credenciales nunca deben incluirse directamente en el código ni subirse al repositorio.
 
 ## Docker
 
@@ -197,6 +240,22 @@ La imagen realiza tres etapas:
 El frontend compilado se copia dentro de los recursos estáticos de Spring Boot.
 
 De esta manera, frontend y backend se ejecutan desde un único contenedor.
+
+## Despliegue
+
+La aplicación se encuentra desplegada en Vercel utilizando el `Dockerfile` del proyecto.
+
+Spring Boot utiliza el puerto proporcionado por la plataforma mediante:
+
+```properties
+server.port=${PORT:8080}
+```
+
+Esto permite utilizar el puerto `8080` localmente y adaptarse automáticamente al entorno de producción.
+
+Demo:
+
+https://apple-store-meli.vercel.app/
 
 ## Instalación
 
@@ -224,12 +283,20 @@ Crear un archivo `.env` en la raíz del proyecto:
 ```env
 MELI_CLIENT_ID=...
 MELI_CLIENT_SECRET=...
+
+SUPABASE_URL=...
+SUPABASE_SECRET_KEY=...
+```
+
+Si Supabase todavía no contiene un estado OAuth inicial:
+
+```env
 MELI_ACCESS_TOKEN=...
 MELI_REFRESH_TOKEN=...
 MELI_EXPIRES_AT=...
 ```
 
-El archivo `.env` está excluido del repositorio.
+El archivo `.env` está excluido del repositorio mediante `.gitignore`.
 
 ### Construir y ejecutar
 
@@ -270,6 +337,8 @@ cd backend
 mvn spring-boot:run
 ```
 
+Al ejecutarlo fuera de Docker, las variables utilizadas mediante `System.getenv()` deben estar disponibles en el entorno del proceso.
+
 ## Estructura del proyecto
 
 ```text
@@ -281,11 +350,11 @@ apple-store-api/
 │
 ├── backend/
 │   ├── src/
-│   ├── pom.xml
-│   └── data/
+│   └── pom.xml
 │
 ├── Dockerfile
 ├── docker-compose.yml
+├── vercel.json
 ├── .gitignore
 └── README.md
 ```
@@ -303,9 +372,9 @@ Entre las mejoras futuras se encuentran:
 - paginación;
 - carga progresiva de resultados;
 - ampliación de categorías;
-- persistencia mediante base de datos;
 - mejoras en el sistema de filtros;
-- despliegue en infraestructura cloud.
+- mejor manejo de límites de solicitudes de APIs externas;
+- mejoras generales de rendimiento y experiencia de usuario.
 
 ## Objetivo del proyecto
 
@@ -316,12 +385,14 @@ El objetivo es profundizar conocimientos de desarrollo full stack mediante la co
 - OAuth;
 - programación concurrente;
 - caché;
+- persistencia externa;
 - arquitectura frontend/backend;
 - Docker;
+- despliegue en producción;
 - manejo seguro de credenciales;
 - procesamiento de datos externos.
 
-El proyecto también busca representar una evolución de una aplicación académica hacia una implementación más cercana a un entorno real.
+El proyecto también busca representar la evolución de una aplicación académica hacia una implementación full stack más cercana a un entorno real.
 
 ## Autor
 
