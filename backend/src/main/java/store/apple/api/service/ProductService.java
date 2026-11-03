@@ -10,11 +10,15 @@ import tools.jackson.databind.ObjectMapper;
 
 import java.math.BigDecimal;
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 @Service
 public class ProductService {
     private final MeLiClient meLiClient;
     private final ObjectMapper objectMapper;
+    private final ExecutorService executor = Executors.newFixedThreadPool(8);
     private static final Set<String> SPECS_FILTRABLES = Set.of(
             "INTERNAL_MEMORY", "MAIN_COLOR", "RAM", "PROCESSOR_MODEL", "LINE",
             "RAM_MEMORY_MODULE_TOTAL_CAPACITY", "SSD_DATA_STORAGE_CAPACITY"
@@ -49,32 +53,29 @@ public class ProductService {
             String json = meLiClient.searchProductsByCategory(query, categoryId);
             JsonNode results = objectMapper.readTree(json).path("results");
 
-            List<ProductDTO> productos = new ArrayList<>();
+            List<CompletableFuture<ProductDTO>> tareas = new ArrayList<>();
 
             for (JsonNode producto : results) {
-                // Datos básicos que ya vienen en la búsqueda
-                String id = producto.path("id").asText();
-                String nombre = producto.path("name").asText();
-                String imagen = producto.path("pictures").path(0).path("url").asText(null);
-                String categoria = producto.path("domain_id").asText(null);
-                String enlace = "https://www.mercadolibre.com.ar/p/" + id;
 
-                // El precio se busca aparte (la búsqueda no lo trae)
-                Precio precio = obtenerPrecio(id);
-                if (precio == null) continue;   // sin precio, no lo mostramos
+                CompletableFuture<ProductDTO> tarea =
+                        CompletableFuture.supplyAsync(() -> {
+                            String id = producto.path("id").asText();
+                            String nombre = producto.path("name").asText();
+                            String imagen = producto.path("pictures").path(0).path("url").asText(null);
+                            String categoria = producto.path("domain_id").asText(null);
+                            String enlace = "https://www.mercadolibre.com.ar/p/" + id;
+                            Precio precio = obtenerPrecio(id);
+                            if (precio == null) return null;
 
-                productos.add(new ProductDTO(
-                        id, nombre, imagen,
-                        precio.actual(), precio.original(),
-                        enlace, categoria, leerSpecs(producto)
-                ));
-
-                // Con 10 productos válidos dejamos de consultar a ML
-                if (productos.size() >= 20) break;
+                            return new ProductDTO(
+                                    id, nombre, imagen,
+                                    precio.actual(), precio.original(),
+                                    enlace, categoria, leerSpecs(producto)
+                            );
+                        }, executor);
+                tareas.add(tarea);
             }
-
-            return productos;
-
+            return tareas.stream().map(CompletableFuture::join).filter(Objects::nonNull).limit(20).toList();
         } catch (Exception e) {
             throw new RuntimeException("Error al procesar productos de Mercado Libre", e);
         }

@@ -1,8 +1,8 @@
 package store.apple.api.client;
 
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClient;
+import store.apple.api.service.MeLiTokenService;
 
 import java.util.List;
 
@@ -16,11 +16,11 @@ import java.util.List;
 @Component
 public class MeLiClient {
     private final RestClient restClient;
+    private final MeLiTokenService tokenService;
 
-    public MeLiClient(){
-        this.restClient = RestClient.builder().baseUrl("https://api.mercadolibre.com")
-                .defaultHeader("Authorization", "Bearer " + System.getenv("MELI_ACCESS_TOKEN"))
-                .build();
+    public MeLiClient(MeLiTokenService tokenService){
+        this.tokenService = tokenService;
+        this.restClient = RestClient.builder().baseUrl("https://api.mercadolibre.com").build();
     }
     public String searchProducts(String q) {
         return restClient.get()
@@ -30,12 +30,14 @@ public class MeLiClient {
                         .queryParam("limit", 20)
                         .queryParam("q", q)
                         .build())
+                .header("Authorization", "Bearer " + tokenService.getAccessToken())
                 .retrieve().body(String.class);
     }
     public String searchCategory(String q) {
         return restClient.get().uri(uriBuilder -> uriBuilder.path("/sites/MLA/domain_discovery/search")
                         .queryParam("q", q)
                         .build())
+                .header("Authorization", "Bearer " + tokenService.getAccessToken())
                 .retrieve().body((String.class));
     }
     public String searchProductsByCategory(String q, String categoryId) {
@@ -45,19 +47,22 @@ public class MeLiClient {
                         .queryParam("site_id", "MLA")
                         .queryParam("q", q)
                         .queryParam("domain_id", categoryId)
-                        .queryParam("limit", 60)
+                        .queryParam("limit", 30)
                         .build())
+                .header("Authorization", "Bearer " + tokenService.getAccessToken())
                 .retrieve().body(String.class);
     }
     public String getProduct(String productId) {
         return restClient.get()
                 .uri("/products/{id}", productId)
+                .header("Authorization", "Bearer " + tokenService.getAccessToken())
                 .retrieve()
                 .body(String.class);
     }
     public String getProductItems(String productId) {
         return restClient.get()
                 .uri("/products/{id}/items", productId)
+                .header("Authorization", "Bearer " + tokenService.getAccessToken())
                 .retrieve()
                 .body(String.class);
     }
