@@ -6,4 +6,3 @@ target/
 data/
 data/meli-token.json
 .env.*
-backend/data/

@@ -1,6 +1,7 @@
 package store.apple.api.client;
 
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestClient;
 import store.apple.api.service.MeLiTokenService;
 
@@ -23,6 +24,7 @@ public class MeLiClient {
     }
     public String searchProducts(String q) {
         String query = q.toLowerCase().contains("apple") ? q : "Apple " + q;
+        try {
         return restClient.get()
                 .uri(uriBuilder -> uriBuilder.path("/products/search")
                         .queryParam("status", "active")
@@ -32,6 +34,11 @@ public class MeLiClient {
                         .build())
                 .header("Authorization", "Bearer " + tokenService.getAccessToken())
                 .retrieve().body(String.class);
+        } catch (HttpClientErrorException.TooManyRequests e) {
+            throw new RuntimeException("Mercado Libre limitó temporalmente las solicitudes.", e);
+        } catch (HttpClientErrorException e) {
+            throw new RuntimeException("Error de Mercado Libre: " + e.getStatusCode(), e);
+        }
     }
     public String searchCategory(String q) {
         return restClient.get().uri(uriBuilder -> uriBuilder.path("/sites/MLA/domain_discovery/search")

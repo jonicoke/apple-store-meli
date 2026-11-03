@@ -33,7 +33,6 @@ WORKDIR /app
 
 COPY --from=backend-build /app/target/*.jar app.jar
 
-RUN mkdir -p /app/data
 
 EXPOSE 8000
 
